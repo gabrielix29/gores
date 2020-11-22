@@ -1,5 +1,10 @@
 package gores
 
+import (
+	"encoding/json"
+	"net/http"
+)
+
 // HTTP Methods
 const (
 	CONNECT = "CONNECT"
@@ -46,3 +51,18 @@ const (
 	// CharsetUTF8 utf8 character set
 	CharsetUTF8 = "charset=utf-8"
 )
+
+func JSON(w http.ResponseWriter, code int, i interface{}) error {
+	b, err := json.Marshal(i)
+	if err != nil {
+		return err
+	}
+	_json(w, code, b)
+	return nil
+}
+
+func _json(w http.ResponseWriter, code int, b []byte) {
+	w.Header().Set(ContentType, ApplicationJSONCharsetUTF8)
+	w.WriteHeader(code)
+	_, _ = w.Write(b)
+}
